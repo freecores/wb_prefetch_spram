@@ -56,6 +56,9 @@
 // CVS Revision History
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.2  2001/07/30 05:38:02  lampret
+// Adding empty directories required by HDL coding guidelines
+//
 //
 
 `include "timescale.v"
@@ -142,10 +145,16 @@ assign predicted_addr = { last_addr[aw-1:`FIXED_LOW_BIT], last_addr[`BURST_BITS]
 assign ram_addr = (~correct_data | we_i) ? adr_i : predicted_addr;
 
 //
-// RAM's current output data is the same as data request by WISHBONE master
+// Assert correct_data if RAM's current output data is the same as data
+// requested by WISHBONE master
 //
 assign correct_data = (adr_i == last_addr);
-assign ack_o = correct_data & valid_cycle;
+
+//
+// Acknowledge current WISHBONE transfer if correct data was delivered
+// or if it is write transfer
+//
+assign ack_o = (correct_data | we_i) & valid_cycle;
 
 //
 // Address used to address RAM at the last WISHBONE read beat
