@@ -62,6 +62,9 @@
 // CVS Revision History
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.2  2001/07/30 05:38:02  lampret
+// Adding empty directories required by HDL coding guidelines
+//
 //
 
 `include "timescale.v"
@@ -74,8 +77,8 @@ module generic_spram(
 //
 // Default address and data buses width
 //
-parameter aw = 12;
-parameter dw = 16;
+parameter aw = 13;
+parameter dw = 32;
 
 //
 // Generic synchronous single-port RAM interface
@@ -101,7 +104,7 @@ output	[dw-1:0]	do;	// output data bus
 //
 // Artisan Synchronous Single-Port RAM (ra1sh)
 //
-artisan_ssp #(dw, 2<<aw, aw) artisan_ssp(
+art_hssp_8192x32 #(dw, 2<<aw, aw) artisan_ssp(
 	.CLK(clk),
 	.CEN(~ce),
 	.WEN(~we),
