@@ -46,11 +46,16 @@
 // CVS Revision History
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.2  2001/07/30 05:38:02  lampret
+// Adding empty directories required by HDL coding guidelines
+//
 //
 
 `include "timescale.v"
 
 module tb_tasks;
+
+integer			errors;
 
 //
 // Tests description
@@ -96,7 +101,8 @@ begin
 	$display("I. Initializing 1st half of the RAM: ");
 	for (addr = 0; addr < `RAM_WORDS/2; addr = addr + 1) begin
 		$write("w");
-		data = $random;
+//		data = $random;
+		data = addr;
 		tb_top.wb_master.wr(addr, data, 4'b1111);
 	end
 	$display(" Done.");
@@ -184,6 +190,60 @@ begin
 end
 endtask
 
+
+//
+// Read and write same addresses in first half (to check for bug reported by Avi)
+//
+task read_write_1sthalf;
+reg	[31:0]		saddr;
+reg	[31:0]		daddr;
+reg	[31:0]		data [63:0];
+reg	[3:0]		rndnum;
+reg	[1:0]		delay;
+reg	[2:0]		beats;
+integer			start_time;
+integer			end_time;
+begin
+	$display;
+	$display("III. Reading and writing same locations in the first half");
+	start_time = $time;
+	for (saddr = 0; saddr < `RAM_WORDS/2; saddr = saddr) begin
+
+		//
+		// Read and write same locations. Beats are spaced with random delays.
+		//
+		rndnum = $random;
+		if (rndnum == 0)
+			delay = $random;
+		else
+			delay = 0;
+		while (delay)
+			@(posedge tb_top.clk) begin
+				delay = delay - 1;
+				$write(".");
+			end
+		$write("r");
+		tb_top.wb_master.rd(saddr, data[1]);
+		daddr = saddr;
+		$write("w");
+		tb_top.wb_master.wr(daddr, data[1], 4'b1111);
+		$write("r");
+		tb_top.wb_master.rd(saddr, data[2]);
+		if (data[1] != data[2]) begin
+			$write("Read/Write/Read sequence performing accesses ");
+			$write("to address %h failed. First read %h != second read %h", saddr, data[1], data[2]);
+			errors = errors + 1;
+		end
+		saddr = saddr + 1;
+	end
+
+	$display(" Done.");
+	end_time = $time;
+	$display;
+	$display(" Clock cycles to complete copy: %d", (end_time - start_time) / (`Thper*2));
+end
+endtask
+
 //
 // Compare 1st half and 2nd half of the RAM and return result of the comparison
 //
@@ -192,11 +252,9 @@ reg	[31:0]		saddr;
 reg	[31:0]		sdata;
 reg	[31:0]		daddr;
 reg	[31:0]		ddata;
-integer			errors;
 begin
 	$display;
 	$display("III. Comparing 1st half and 2nd half of the RAM.");
-	errors = 0;
 	for (saddr = 0; saddr < `RAM_WORDS/2; saddr = saddr + 1) begin
 		daddr = saddr + `RAM_WORDS/2;
 		tb_top.wb_master.rd(saddr, sdata);
@@ -227,7 +285,9 @@ initial begin
 	#`Trst;
 	describe_test;
 	init_1sthalf;
+	errors = 0;
 	copy_1stto2ndhalf;
+	read_write_1sthalf;
 	comp_1stand2ndhalf;
 	$finish;
 end
