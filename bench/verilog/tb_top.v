@@ -44,6 +44,9 @@
 // CVS Revision History
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.2  2001/07/30 05:38:02  lampret
+// Adding empty directories required by HDL coding guidelines
+//
 //
 
 `include "timescale.v"
@@ -54,7 +57,7 @@ module tb_top;
 // Width of address and data buses
 //
 parameter aw = `RAM_ADDRWIDTH;
-parameter dw = 16;
+parameter dw = `RAM_DATAWIDTH;
 
 //
 // Internal wires

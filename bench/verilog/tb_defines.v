@@ -44,6 +44,9 @@
 // CVS Revision History
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.2  2001/07/30 05:38:02  lampret
+// Adding empty directories required by HDL coding guidelines
+//
 //
 
 //
@@ -63,6 +66,11 @@
 `define RAM_WORDS (2<<`RAM_ADDRWIDTH)
 
 //
+// RAM data width 
+//
+`define RAM_DATAWIDTH 32
+
+//
 // Define to get VCD output
 //
-//`define VCD_DUMP
+`define VCD_DUMP

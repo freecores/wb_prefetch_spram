@@ -113,8 +113,8 @@ parameter dw = 32;
 	 write_flag = 0;
 	 
 	 GO <= 1;	 
-	 @(posedge CLK_I);
-	 GO <= 0;	 // DL
+//	 @(posedge CLK_I);
+//	 GO <= 0;	 // DL
 
 	 // wait for cycle to start
 	 while (~CYC_O)
@@ -143,8 +143,8 @@ parameter dw = 32;
 	 data = dat;
 	 
 	 GO <= 1;	 
-	 @(posedge CLK_I);
-	 GO <= 0;	 // DL
+//	 @(posedge CLK_I);
+//	 GO <= 0;	 // DL
 
 	 // wait for cycle to start
 	 while (~CYC_O)
@@ -170,8 +170,8 @@ parameter dw = 32;
 	 cycle_end = end_flag;
 	 address = adr;	 
 	 GO <= 1;	 
-	 @(posedge CLK_I);
-	 GO <= 0;	 // DL
+//	 @(posedge CLK_I);
+//	 GO <= 0;	 // DL
 
 	 while (~(ACK_I & STB_O))
 	   @(posedge CLK_I);
@@ -194,12 +194,12 @@ parameter dw = 32;
 	 data = dat;
 	 selects = sel;
 	 GO <= 1;	 
-	 @(posedge CLK_I);
-	 GO <= 0;	 // DL
+//	 @(posedge CLK_I);
+//	 GO <= 0;	 // DL
 
 	 while (~(ACK_I & STB_O))
 	   @(posedge CLK_I);
-	 
+
       end
    endtask // blkwr
 
