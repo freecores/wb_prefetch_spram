@@ -62,6 +62,9 @@
 // CVS Revision History
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.3  2001/09/23 05:02:12  lampret
+// Temporarily changed artisan memory cell name to art_hssp_8192x32
+//
 // Revision 1.2  2001/07/30 05:38:02  lampret
 // Adding empty directories required by HDL coding guidelines
 //
@@ -215,8 +218,10 @@ assign do = (oe) ? do_reg : {dw{1'bz}};
 always @(posedge clk)
 	if (ce && !we)
 		do_reg <= #1 mem[addr];
-	else if (ce && we)
+	else if (ce && we) begin
 		mem[addr] <= #1 di;
+		do_reg <= #1 di;
+	end
 
 `endif	// !XILINX_RAMB4_S16
 `endif	// !VIRTUALSILICON_SSP
